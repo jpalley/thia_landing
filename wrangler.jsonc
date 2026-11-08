@@ -1,0 +1,31 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "thia-landing",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "routes": [
+    // Routes, not custom domains. The root and www DNS records already go
+    // through the Cloudflare proxy, so the Worker answers every request and
+    // the old Bluehost server never sees web traffic.
+    { "pattern": "tinyhomeindustryassociation.org/*", "zone_name": "tinyhomeindustryassociation.org" },
+    { "pattern": "www.tinyhomeindustryassociation.org/*", "zone_name": "tinyhomeindustryassociation.org" }
+  ],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    // The Worker runs first on every request, so it can redirect http:// to https://.
+    "run_worker_first": true
+  },
+  "send_email": [
+    {
+      "name": "EMAIL",
+      "allowed_destination_addresses": ["jonathan@clevertinyhomes.com"]
+    }
+  ],
+  "vars": {
+    "CONTACT_TO": "jonathan@clevertinyhomes.com",
+    "CONTACT_FROM": "contact@thia.clevertinyhomes.com"
+  },
+  "observability": { "enabled": true }
+}
